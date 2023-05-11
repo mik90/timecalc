@@ -19,6 +19,7 @@ impl std::fmt::Display for TimeUnit {
         write!(f, "{}", output)
     }
 }
+
 #[derive(Debug, PartialEq)]
 pub struct TimeValue {
     nanoseconds: i64,
@@ -27,7 +28,12 @@ pub struct TimeValue {
 
 impl TimeValue {
     pub fn new(count: i64, unit: TimeUnit) -> TimeValue {
-        let nanoseconds = TimeValue::as_nanos(count, unit);
+        let nanoseconds = match unit {
+            TimeUnit::Seconds => count * 1_000_000_000,
+            TimeUnit::Milliseconds => count * 1_000_000,
+            TimeUnit::Microseconds => count * 1_000,
+            TimeUnit::Nanoseconds => count,
+        };
         TimeValue { nanoseconds, unit }
     }
 
@@ -35,14 +41,13 @@ impl TimeValue {
         self.unit
     }
 
-    pub fn count(&self) -> i64 {
+    pub fn count(&self) -> f64 {
+        let nanos_float = self.nanoseconds as f64;
         match self.unit {
-            // Integer division rounds down in Rust, so this is a lossy division.
-            // Subtractinga very small number from a very larger number effectively does nothing
-            TimeUnit::Seconds => self.nanoseconds / 1_000_000_000,
-            TimeUnit::Milliseconds => self.nanoseconds / 1_000_000,
-            TimeUnit::Microseconds => self.nanoseconds / 1_000,
-            TimeUnit::Nanoseconds => self.nanoseconds,
+            TimeUnit::Seconds => nanos_float / 1_000_000_000f64,
+            TimeUnit::Milliseconds => nanos_float / 1_000_000f64,
+            TimeUnit::Microseconds => nanos_float / 1_000f64,
+            TimeUnit::Nanoseconds => nanos_float,
         }
     }
 
@@ -59,13 +64,8 @@ impl TimeValue {
         self.unit = unit;
     }
 
-    fn as_nanos(count: i64, unit: TimeUnit) -> i64 {
-        match unit {
-            TimeUnit::Seconds => count * 1_000_000_000,
-            TimeUnit::Milliseconds => count * 1_000_000,
-            TimeUnit::Microseconds => count * 1_000,
-            TimeUnit::Nanoseconds => count,
-        }
+    pub fn nanos(&self) -> i64 {
+        self.nanoseconds
     }
 }
 

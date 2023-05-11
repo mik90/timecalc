@@ -80,6 +80,7 @@ pub fn calculate(input: &str) -> Result<TimeValue, String> {
 
 #[cfg(test)]
 mod test {
+
     use super::*;
 
     #[test]
@@ -95,7 +96,8 @@ mod test {
         let res = parse_time_value("20 seconds");
         assert!(res.is_ok(), "{}", res.unwrap_err());
         let (_, value) = res.unwrap();
-        assert!(matches!(value.count(), 20));
+
+        assert!(matches!(value.nanos(), 20_000_000_000));
         assert!(matches!(value.unit(), TimeUnit::Seconds));
     }
 
@@ -105,8 +107,7 @@ mod test {
         assert!(res.is_ok(), "{}", res.unwrap_err());
         let value = res.unwrap();
 
-        assert_eq!(value.count(), 10);
-        assert_eq!(value.unit(), TimeUnit::Microseconds);
+        assert_eq!(format!("{}", value), "10us");
     }
 
     #[test]
@@ -115,8 +116,7 @@ mod test {
         assert!(res.is_ok(), "{}", res.unwrap_err());
         let value = res.unwrap();
 
-        assert_eq!(value.count(), 15);
-        assert_eq!(value.unit(), TimeUnit::Milliseconds);
+        assert_eq!(format!("{}", value), "15ms");
     }
 
     #[test]
@@ -125,8 +125,7 @@ mod test {
         assert!(res.is_ok(), "{}", res.unwrap_err());
         let value = res.unwrap();
 
-        assert_eq!(value.count(), 89);
-        assert_eq!(value.unit(), TimeUnit::Seconds);
+        assert_eq!(format!("{}", value), "89.995sec");
     }
 
     #[test]
@@ -135,8 +134,7 @@ mod test {
         assert!(res.is_ok(), "{}", res.unwrap_err());
         let value = res.unwrap();
 
-        assert_eq!(value.count(), 5);
-        assert_eq!(value.unit(), TimeUnit::Seconds);
+        assert_eq!(format!("{}", value), "5sec");
     }
 
     #[test]
@@ -145,8 +143,7 @@ mod test {
         assert!(res.is_ok(), "{}", res.unwrap_err());
         let value = res.unwrap();
 
-        assert_eq!(value.count(), 5);
-        assert_eq!(value.unit(), TimeUnit::Milliseconds);
+        assert_eq!(format!("{}", value), "5ms");
     }
 
     #[test]
@@ -155,8 +152,7 @@ mod test {
         assert!(res.is_ok(), "{}", res.unwrap_err());
         let value = res.unwrap();
 
-        assert_eq!(value.count(), 5);
-        assert_eq!(value.unit(), TimeUnit::Microseconds);
+        assert_eq!(format!("{}", value), "5us");
     }
 
     #[test]
@@ -165,7 +161,33 @@ mod test {
         assert!(res.is_ok(), "{}", res.unwrap_err());
         let value = res.unwrap();
 
-        assert_eq!(value.count(), 5000);
-        assert_eq!(value.unit(), TimeUnit::Nanoseconds);
+        assert_eq!(format!("{}", value), "5000ns");
+    }
+
+    #[test]
+    fn test_calculate_half_of_microsecond() {
+        let res = calculate("1 us - 500 ns");
+        assert!(res.is_ok(), "{}", res.unwrap_err());
+        let value = res.unwrap();
+
+        assert_eq!(format!("{}", value), "0.5us");
+    }
+
+    #[test]
+    fn test_calculate_quarter_of_microsecond() {
+        let res = calculate("1 us - 750 ns");
+        assert!(res.is_ok(), "{}", res.unwrap_err());
+        let value = res.unwrap();
+
+        assert_eq!(format!("{}", value), "0.25us");
+    }
+
+    #[test]
+    fn test_calculate_third_of_microsecond() {
+        let res = calculate("1 us - 666 ns");
+        assert!(res.is_ok(), "{}", res.unwrap_err());
+        let value = res.unwrap();
+
+        assert_eq!(format!("{}", value), "0.334us");
     }
 }
