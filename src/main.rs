@@ -1,8 +1,9 @@
+mod calculate;
 mod operations;
 mod parse;
 mod time;
 
-use crate::parse::calculate;
+use crate::calculate::calculate;
 
 use std::process::ExitCode;
 

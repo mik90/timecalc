@@ -64,6 +64,7 @@ impl TimeValue {
         self.unit = unit;
     }
 
+    #[cfg(test)]
     pub fn nanos(&self) -> i64 {
         self.nanoseconds
     }
