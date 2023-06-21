@@ -4,21 +4,12 @@ Calculator for converting between units of time as well as some simple arithmeti
 
 ## Capabilities
 
-It's a pretty dead-simple calculator for simple conversions.
-
-Output can be explicitly set to a given unit by writing `as <time_unit>` at the end of an expression.
-
-Changing a larger unit like `seconds` by a very small amount will be lossy since only integer outputs are used.
-
-By default, rust rounds down in integer conversion so doing `90sec - 1ns` results in `89sec` if the output format is in `seconds`.
-Using the conversion operator `as ns` will prevent the output from rounding down and `89999999999ns` will be the output instead.
-
-### arithmetic operations
+### Arithmetic operations
 
 - addition
 - subtraction
 
-### units
+### Units
 
 - seconds
 - milliseconds
@@ -26,6 +17,19 @@ Using the conversion operator `as ns` will prevent the output from rounding down
 - nanoseconds
 
 The different mappings of text to unit can be seen in `parse_time_unit` in [src/parse.rs](src/parse.rs).
+
+### Unit conversions
+
+Units are left-associative so the output will be the same unit as the left-most unit.
+Output can be explicitly set to a given unit by writing `as <time_unit>` at the end of an expression.
+
+Resolution is at the nanosecond range and output is floating point. `format!()`'s default behavior for floating point
+values works well enough for this use-case.
+
+```bash
+$ tcalc 1 us - 750 ns
+Result: 0.25us
+```
 
 ## Install locally with cargo
 
