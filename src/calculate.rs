@@ -35,6 +35,17 @@ mod test {
     use super::*;
 
     #[test]
+    fn test_calculate_invalid_expression() {
+        let res = calculate("10sec as a dozen us");
+        assert!(res.is_err());
+
+        let err_msg = res.unwrap_err();
+        assert!(err_msg.contains("Expected 'as <time_unit>'"));
+        assert!(err_msg.contains("but saw"));
+        assert!(err_msg.contains("a dozen us"));
+    }
+
+    #[test]
     fn test_calculate_expression_time_value() {
         let res = calculate("10 us");
         assert!(res.is_ok(), "{}", res.unwrap_err());
