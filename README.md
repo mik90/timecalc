@@ -53,3 +53,10 @@ Change unit of output
 $ tcalc 2000ms - 150ms as us
 Result: 1850000us
 ```
+
+Expressions with more than two operands and fractions
+
+```bash
+$ tcalc 1sec - 0.5sec + 250ms
+Result: 0.75sec
+```

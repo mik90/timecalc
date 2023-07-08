@@ -33,6 +33,7 @@ pub fn calculate(input: &str) -> Result<TimeValue, String> {
 #[cfg(test)]
 mod test {
     use super::*;
+
     #[test]
     fn test_calculate_expression_time_value() {
         let res = calculate("10 us");
@@ -40,6 +41,24 @@ mod test {
         let value = res.unwrap();
 
         assert_eq!(format!("{}", value), "10us");
+    }
+
+    #[test]
+    fn test_calculate_expression_conversion_only() {
+        let res = calculate("1000 us as ms");
+        assert!(res.is_ok(), "{}", res.unwrap_err());
+        let value = res.unwrap();
+
+        assert_eq!(format!("{}", value), "1ms");
+    }
+
+    #[test]
+    fn test_calculate_expression_fractional_input() {
+        let res = calculate("0.5sec as ms");
+        assert!(res.is_ok(), "{}", res.unwrap_err());
+        let value = res.unwrap();
+
+        assert_eq!(format!("{}", value), "500ms");
     }
 
     #[test]
@@ -121,5 +140,14 @@ mod test {
         let value = res.unwrap();
 
         assert_eq!(format!("{}", value), "0.334us");
+    }
+
+    #[test]
+    fn test_calculate_expression_fractional_addition() {
+        let res = calculate("0.5sec + 0.25sec");
+        assert!(res.is_ok(), "{}", res.unwrap_err());
+        let value = res.unwrap();
+
+        assert_eq!(format!("{}", value), "0.75sec");
     }
 }

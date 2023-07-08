@@ -27,14 +27,18 @@ pub struct TimeValue {
 }
 
 impl TimeValue {
-    pub fn new(count: i64, unit: TimeUnit) -> TimeValue {
+    pub fn new(count: f64, unit: TimeUnit) -> TimeValue {
         let nanoseconds = match unit {
-            TimeUnit::Seconds => count * 1_000_000_000,
-            TimeUnit::Milliseconds => count * 1_000_000,
-            TimeUnit::Microseconds => count * 1_000,
+            TimeUnit::Seconds => count * 1_000_000_000.0,
+            TimeUnit::Milliseconds => count * 1_000_000.0,
+            TimeUnit::Microseconds => count * 1_000.0,
             TimeUnit::Nanoseconds => count,
         };
-        TimeValue { nanoseconds, unit }
+
+        TimeValue {
+            nanoseconds: nanoseconds.round() as i64,
+            unit,
+        }
     }
 
     pub fn unit(&self) -> TimeUnit {
@@ -44,9 +48,9 @@ impl TimeValue {
     pub fn count(&self) -> f64 {
         let nanos_float = self.nanoseconds as f64;
         match self.unit {
-            TimeUnit::Seconds => nanos_float / 1_000_000_000f64,
-            TimeUnit::Milliseconds => nanos_float / 1_000_000f64,
-            TimeUnit::Microseconds => nanos_float / 1_000f64,
+            TimeUnit::Seconds => nanos_float / 1_000_000_000.0,
+            TimeUnit::Milliseconds => nanos_float / 1_000_000.0,
+            TimeUnit::Microseconds => nanos_float / 1_000.0,
             TimeUnit::Nanoseconds => nanos_float,
         }
     }

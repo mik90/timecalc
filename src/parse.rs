@@ -27,7 +27,7 @@ fn parse_time_unit(input: &str) -> nom::IResult<&str, TimeUnit> {
 }
 
 pub fn parse_time_value(input: &str) -> nom::IResult<&str, TimeValue> {
-    let (input, count) = nom::character::complete::i64(input)?;
+    let (input, count) = nom::number::complete::double(input)?;
     let (input, _) = nom::character::complete::space0(input)?;
     let (input, unit) = parse_time_unit(input)?;
     Ok((input, TimeValue::new(count, unit)))
