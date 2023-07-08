@@ -39,7 +39,7 @@ fn main() -> ExitCode {
         return ExitCode::FAILURE;
     }
 
-    let input = args.skip(1).collect::<Vec<String>>().join("");
+    let input = args.skip(1).collect::<Vec<String>>().join(" ");
 
     let res = calculate(&input);
     match res {
